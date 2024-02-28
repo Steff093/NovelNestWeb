@@ -1,0 +1,42 @@
+﻿@if (SelectionChanged == "option1")
+{
+    <h2>Benutzerliste</h2>
+
+    @if (Users is not null)
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>User Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Users)
+                {
+                    <tr>
+                        <td>@user.Id</td>
+                        <td>@user.UserName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Keine Benutzer gefunden</p>
+    }
+}
+else if (SelectionChanged is "")
+{
+    <p>Ungültige Auswahl</p>
+}
+
+@code {
+    [Parameter]
+    public List<ApplicationUser> Users { get; set; }
+
+    [Parameter]
+    public string SelectionChanged { get; set; }
+}
+

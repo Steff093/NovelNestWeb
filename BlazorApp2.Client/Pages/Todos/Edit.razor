@@ -1,0 +1,33 @@
+﻿@page "/Todos/Edit/{todoId:int}"
+@rendermode InteractiveServer
+@inject NavigationManager uriHelper
+@inject IJSRuntime js
+
+<PageTitle>Edit your Todo</PageTitle>
+
+<h3>Edit</h3>
+
+<TodoForm ButtonText="Edit Todo" todo="todo"
+    OnValidSubmit="@EditTodo"/>
+
+@code {
+    HttpClient client;
+    [Parameter] public int todoId { get; set; }
+    TodoModel todo = new();
+    protected async override Task OnParametersSetAsync()
+    {
+        client = new HttpClient();
+        client.BaseAddress = new Uri("https://localhost:7061");
+        todo = await client.GetFromJsonAsync<TodoModel>($"api/todo/{todoId}");
+    }
+    async Task EditTodo()
+    {
+        await client.PutAsJsonAsync("api/todo", todo);
+        await js.InvokeVoidAsync("alert", $"Updated Successfully!");
+        uriHelper.NavigateTo("todos/todoindex");
+    }
+
+
+
+
+}

@@ -1,0 +1,80 @@
+﻿@page "/Todos/TodoIndex"
+@rendermode InteractiveServer
+@inject IJSRuntime js
+
+<PageTitle>Todo</PageTitle>
+
+<h3>Todo</h3>
+<small>Add new Todo</small>
+
+<div class="form-group">
+    <a class="btn btn-success" href="/todos/create"><i class="bi-plus-square-fill-nav-menu"></i>Create new</a>
+</div>
+<br />
+
+@if (todos == null)
+{
+    <text>Loading..</text>
+}
+else if(todos.Length == 0)
+{
+    <text>No Records Found</text>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>TodoId</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>CreatedDate</th>
+                <th>IsCompleted</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(TodoModel model in todos)
+            {
+                <tr>
+                    <td>@model.TodoId</td>
+                    <td>@model.Title</td>
+                    <td>@model.Description</td>
+                    <td>@model.CreatedDate</td>
+                    <td>@model.isCompleted</td>
+                    <td>
+                        <a class="btn btn-success" href="/Todos/Edit/@model.TodoId">Edit</a>
+                        <button class="btn btn-outline-danger" @onclick="@(() => Delete(model.TodoId))">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    HttpClient client;
+    private TodoModel[]? todos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            client = new HttpClient();
+            client.BaseAddress = new Uri("https://localhost:7061");
+            todos = await client.GetFromJsonAsync<TodoModel[]>("api/todo");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("New Error " + ex.Message);
+        }
+    }
+    async Task Delete(int todosId)
+    {
+        var todo = todos.First(x => x.TodoId == todosId);
+        if (await js.InvokeAsync<bool>("confirm", $"Do you want to Delete {todo.Title}'s with {todo.Description}"))
+        {
+            await client.DeleteAsync($"api/todo/{todo.TodoId}");
+            await OnInitializedAsync();
+        }
+    }
+}

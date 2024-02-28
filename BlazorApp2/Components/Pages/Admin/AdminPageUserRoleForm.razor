@@ -1,0 +1,37 @@
+﻿@if (SelectionChanged == "option2")
+{
+    <h2>User Roles</h2>
+
+    @if (UserRole is not null)
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>UserID</th>
+                    <th>RoleId</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in UserRole)
+                {
+                    <tr>
+                        <td>@user.UserId</td>
+                        <td>@user.RoleId</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Keine Rollen gefunden</p>
+    }
+}
+
+@code {
+    [Parameter]
+    public List<IdentityUserRole<string>> UserRole { get; set; }
+
+    [Parameter]
+    public string SelectionChanged { get; set; }
+}

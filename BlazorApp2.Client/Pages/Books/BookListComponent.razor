@@ -1,0 +1,42 @@
+﻿@if (book is not null)
+{
+    <tr>
+        <td>@book.BookId</td>
+        <td>@book.BookTitle</td>
+        <td>@book.BookDescription</td>
+        <td>@book.BookDate</td>
+        <td>
+            @if (book.BookAuthor is null)
+            {
+                <span class="text-muted">No Author Recorded</span>
+            }
+            else
+            {
+                <span>
+                    @book.BookAuthor
+                </span>
+            }
+        </td>
+        <td>
+            <a href="/books/details/@book.BookId" class="btn btn-primary">
+                <span class="oi oi-book"></span>
+                Details
+            </a>
+            <a href="/books/update/@book.BookId" class="btn btn-warning">
+                <span class="oi oi-pencil"></span>
+                Update
+            </a>
+            <a href="/book/delete/@book.BookId" class="btn btn-danger">
+                <span class="oi oi-delete"></span>
+                Delete
+            </a>
+        </td>
+    </tr>
+}
+
+@code {
+
+    [Parameter]
+    public BookModel book { get; set; }
+
+}

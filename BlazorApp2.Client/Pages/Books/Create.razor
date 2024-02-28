@@ -1,0 +1,22 @@
+﻿@page "/Books/Create"
+@rendermode InteractiveServer
+@inject NavigationManager uriHelper
+<PageTitle>Create Book</PageTitle>
+
+<h3>Create a new Book</h3>
+
+<BookForm ButtonText="Create Book" bookModel="@model"
+    OnValidSubmit="CreateNewBook"/>
+
+@code {
+    HttpClient client;
+    BookModel model = new();
+
+    async Task CreateNewBook()
+    {
+        client = new HttpClient();
+        client.BaseAddress = new Uri("https://localhost:7061");
+        await client.PostAsJsonAsync<BookModel>("api/book/create", model);
+        uriHelper.NavigateTo("/books/bookIndex");
+    }
+}

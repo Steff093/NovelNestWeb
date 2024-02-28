@@ -1,0 +1,38 @@
+﻿@page "/conversion"
+@rendermode InteractiveServer
+
+<PageTitle>Conversion</PageTitle>
+
+<h3>Conversion from Euro to Euro</h3>
+
+<p>Euro</p>
+<input @bind=textbox />
+<p>Dollar</p>
+<input readonly="readonly" @bind=dollar />
+
+<ul>
+    <button @onclick="ConvertToDollar">Convert</button>
+    <Button @onclick="ClearInput">Clear</Button>
+</ul>
+
+@code {
+    private double euro;
+    private double dollar;
+    private string textbox = "";
+
+    void ConvertToDollar()
+    {
+        if (!string.IsNullOrEmpty(textbox))
+        {
+            euro = Convert.ToDouble(textbox);
+            double kurs = 1.08;
+            dollar = euro * kurs;
+        }
+    }
+
+    void ClearInput()
+    {
+        textbox = "";
+        dollar = 0;
+    }
+}

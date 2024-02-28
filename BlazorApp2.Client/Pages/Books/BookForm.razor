@@ -1,0 +1,40 @@
+﻿<EditForm FormName="Create" Model="@bookModel" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>Title : </label>
+        <div>
+            <InputText @bind-Value="@bookModel.BookTitle" />
+            <ValidationMessage For="(() => bookModel.BookTitle)" />
+        </div>
+    </div>
+    <div class="forum-group">
+        <label>Book Description : </label>
+        <div>
+            <InputText @bind-Value="@bookModel.BookDescription" />
+            <ValidationMessage For="(() => bookModel.BookDescription)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Book Author : </label>
+        <div>
+            <InputText @bind-Value="@bookModel.BookAuthor" />
+            <ValidationMessage For="(() => bookModel.BookAuthor)" />
+        </div>
+    </div>
+    <div> 
+        <label>Book Date : </label>
+        <div>
+            <InputDate @bind-Value="@bookModel.BookDate" />
+            <ValidationMessage For="(() => bookModel.BookDate)" />
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success">
+        @ButtonText
+    </button>
+</EditForm>
+@code {
+    [Parameter] public BookModel bookModel { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+}

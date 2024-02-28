@@ -1,0 +1,32 @@
+﻿@page "/Books/Edit/{bookId:int}"
+@rendermode InteractiveServer
+@inject NavigationManager uriHelper
+@inject IJSRuntime js
+
+<PageTitle>Edit Book</PageTitle>
+
+<h3>Edit</h3>
+
+<BookForm ButtonText="Edit Book" bookModel="bookModel"
+    OnValidSubmit="EditBook"></BookForm>
+
+@code {
+    HttpClient client;
+    [Parameter] public int bookId { get; set; }
+    BookModel bookModel = new();
+    protected override async Task OnParametersSetAsync()
+    {
+        client = new HttpClient();
+        client.BaseAddress = new Uri("https://localhost:7061");
+        bookModel = await client.GetFromJsonAsync<BookModel>($"api/book/{bookId}");
+    }
+
+    async Task EditBook()
+    {
+        await client.PutAsJsonAsync("api/book", bookModel);
+        await js.InvokeVoidAsync("alert", $"Update successfully");
+        uriHelper.NavigateTo("books/bookIndex");
+    }
+
+
+}

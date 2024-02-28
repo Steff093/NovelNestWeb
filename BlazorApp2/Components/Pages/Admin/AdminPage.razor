@@ -1,0 +1,36 @@
+﻿@page "/Admin/admin"
+@rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+@inject NavigationManager NavigationManager
+@inject AdminPanelController AdminPanelController
+
+<PageTitle>Admin Panel</PageTitle>
+
+<h1>Admin Panel</h1>
+
+<select @onchange="HandleSelection">
+    <label>Wählen Sie Ihre Option aus: </label>
+    <option value="option"></option>
+    <option value="option1">Benutzer anzeigen</option>
+    <option value="option2">Rollen anzeigen</option>
+</select>
+
+<AdminPageUserForm Users="@Users" SelectionChanged="@selectionChanged"></AdminPageUserForm>
+<AdminPageUserRoleForm UserRole="@UserRole" SelectionChanged="@selectionChanged"></AdminPageUserRoleForm>
+
+@code {
+    private List<ApplicationUser> Users { get; set; } = new();
+    private List<IdentityUserRole<string>> UserRole { get; set; } = new();
+    string selectionChanged = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Users = await AdminPanelController.ViewListRegisterUserAsync();
+        UserRole = await AdminPanelController.ViewListUserRoles();
+    }
+
+    private void HandleSelection(ChangeEventArgs e)
+    {
+        selectionChanged = e.Value.ToString();
+    }
+}

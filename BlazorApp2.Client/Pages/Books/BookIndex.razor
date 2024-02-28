@@ -1,0 +1,76 @@
+﻿@page "/Books/BookIndex"
+@rendermode InteractiveServer
+@inject IJSRuntime js
+
+<PageTitle>Books</PageTitle>
+
+<h3>Books</h3>
+<small>You cann see here your Books.</small>
+
+<div class="form-group">
+    <a class="btn btn-success" href="/Books/Create">Create a new Book</a>
+</div>
+<br />
+
+@if (booksModel is null)
+{
+    <text>Loading..</text>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>BookId</th>
+                <th>BookTitle</th>
+                <th>BookDescription</th>
+                <th>BookAuthor</th>
+                <th>BookDate</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (booksModel.Length > 0 && booksModel is not null)
+            {
+                @foreach (BookModel book in booksModel)
+                {
+                    <tr>
+                        <td>@book.BookId</td>
+                        <td>@book.BookTitle</td>
+                        <td>@book.BookDescription</td>
+                        <td>@book.BookAuthor</td>
+                        <td>@book.BookDate</td>
+                            <a class="btn btn-success" href="/Books/Edit/@book.BookId">Edit</a>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3">
+                        Cannot find any Books
+                        <a href="/Books/Create">Add a new Book</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    HttpClient client;
+    private BookModel[]? booksModel;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            client = new HttpClient();
+            client.BaseAddress = new Uri("https://localhost:7061");
+            booksModel = await client.GetFromJsonAsync<BookModel[]>($"api/book/");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error : " + ex.Message);
+        }
+    }
+}
